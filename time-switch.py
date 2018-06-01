@@ -6,18 +6,18 @@ interval_bak = 0
 
 def script_properties():
     props = obs.obs_properties_create()
-    obs.obs_properties_add_int(props, "interval", "Interval (Minuten)", 2, 1500, 1)
-    obs.obs_properties_add_bool(props, "enabled", "Aktiviert")
+    obs.obs_properties_add_int(props, "interval", "Interval (minutes)", 2, 1500, 1)
+    obs.obs_properties_add_bool(props, "enabled", "enable")
     return props
 
 def script_load(settings):
-    print("Script geladen.")
+    print("script loaded.")
     
 def script_description():
-    return "<b> TIMER </b>" + \
+    return "<b> TIME-SWITCH </b>" + \
            "<br/>" + \
            "<br/>" + \
-           "Schaltet den Stream im Interval ein/aus."
+           "Toggles Stream according to specified interval."
 
 def script_update(settings):
     global interval
@@ -26,25 +26,25 @@ def script_update(settings):
     if obs.obs_data_get_bool(settings, "enabled"):
         interval = obs.obs_data_get_int(settings, "interval") - 1
         interval_bak = interval
-        print("Timer aktiviert [" + str(interval + 1) + "min]")
+        print("activated [" + str(interval + 1) + "min]")
         if interval > 0:
             obs.timer_add(decrease_interval, 1000 * 60)
     else:
-        print("Timer deaktiviert")
+        print("deactivated")
 
 def startStream():
     obs.obs_frontend_streaming_start()
-    print("Stream gestartet")
+    print("startet streaming")
 
 def stopStream():
     obs.obs_frontend_streaming_stop()
-    print("Stream gestoppt")
+    print("stopped streaming")
 
 def decrease_interval():
     global interval
     global interval_bak
     if interval > 0:
-        print("Aktueller Loop: " + str(interval) + " Minuten übrig.")
+        print("current timer: " + str(interval) + " minutes left")
         interval = interval - 1
     else:
         if obs.obs_frontend_streaming_active():
